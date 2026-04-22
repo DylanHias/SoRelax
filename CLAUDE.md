@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Repository status
 
-Milestones M1–M3 are done (scaffold + design system, TinaCMS with 3 collections, Salonized + cookie consent + contact form backend). M4 (SEO/perf/a11y pass and Cloudflare Pages deploy) is next. See `README.md` for the current state per milestone.
+Milestones M1–M3 are done (scaffold + design system, TinaCMS with 3 collections, Salonized + cookie consent). M4 (SEO/perf/a11y pass and Cloudflare Pages deploy) is next. See `README.md` for the current state per milestone.
 
 Source-of-truth documents:
 
@@ -17,7 +17,9 @@ When scaffolding net-new work, follow the build order in §12 of the brief.
 
 **Language: Dutch only.** All UI strings, form labels, errors, TinaCMS field labels, and page slugs are Dutch (`nl-BE`). English phrases appear only as intentional accent taglines (e.g. *"Your me-time starts with... me"*) — do not translate these and do not add English elsewhere. Slugs are Dutch: `/over-mij`, `/behandelingen`, `/afspraak`, `/cadeaubon`, `/algemene-voorwaarden`.
 
-**Static export, not edge runtime.** Use `output: 'export'` in `next.config`. Do not reach for `@cloudflare/next-on-pages`, SSR, route handlers for dynamic data, or ISR — the brief rejects them explicitly (§2). The contact form is the one exception and lives in a separate Cloudflare Worker (or Formspree), not a Next.js route.
+**Static export, not edge runtime.** Use `output: 'export'` in `next.config`. Do not reach for `@cloudflare/next-on-pages`, SSR, route handlers for dynamic data, or ISR — the brief rejects them explicitly (§2). There is no contact form backend — all inquiries route through Salonized or direct phone/email.
+
+**No contact form.** `/contact` is purely informational (address, phone, email, opening hours) plus a Salonized booking CTA. Don't reintroduce a form component, Resend/Formspree endpoint, or Cloudflare Worker for form submissions — bookings go through Salonized, everything else is phone/email.
 
 **Design direction is "therapist, not spa".** Palette, type, and imagery in §5 are deliberate. Do not introduce candles / stones / lotus / soft-focus massage stock; do not swap Fraunces+Inter for generic "wellness" fonts; no pill buttons; borders over shadows. Tokens (`#FAF7F2`, `#2F5D5A`, etc.) must be exposed as both Tailwind theme tokens **and** CSS custom properties.
 

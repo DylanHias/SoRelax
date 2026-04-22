@@ -34,7 +34,7 @@ Build a production-ready marketing website for **So'Relax**, a solo massage ther
 | Legal | Hardcoded Dutch copy | Privacy + Cookie Policy on `/privacy` and `/cookies`, lawyer-reviewed before launch |
 | Cookie consent | **DIY client-side banner** | GDPR-compliant, localStorage-backed, 3 categories (noodzakelijk / analyse / marketing) |
 | Analytics | **Cloudflare Web Analytics** | Free, cookieless, no banner needed for it |
-| Forms | **Cloudflare Workers + Resend** or **Formspree** free tier | Contact form only |
+| Forms | *None.* Inquiries go through Salonized booking or direct phone/email. No form backend. |
 | Fonts | `next/font` self-hosted | See §5 |
 
 **Why static export instead of `@cloudflare/next-on-pages`:**
@@ -138,7 +138,7 @@ Below the treatments: link-out card for "Pijnklachten? Zoek op pijngids.nl →" 
 - Email: info@sorelaxmassage.be (`mailto:`)
 - BTW: BE 1001 031 585
 - Static map image by default (no JS, no cookies). Optional "Toon interactieve kaart" button loads Google Maps iframe on click.
-- Simple contact form (name, email, message) → Cloudflare Worker + Resend or Formspree.
+- Salonized booking CTA (opens widget in new tab). No contact form.
 - Opening hours (from CMS).
 - Social links (placeholder — client to provide).
 
@@ -148,7 +148,7 @@ Full content from source's "Reservaties / Betaalmethoden / Cadeaubonnen / Hygië
 
 ### 4.8 Privacy & Cookies
 
-Pages contain hardcoded Dutch policy text reflecting what the site actually does: contact form, Salonized redirect (external), Cloudflare Web Analytics (cookieless), TinaCMS, Resend. The baseline copy in `src/app/privacy/` and `src/app/cookies/` must be reviewed by a Belgian lawyer before launch. `/cookies` also exposes a "Cookie-instellingen openen" button wired to `openCookiePreferences()`.
+Pages contain hardcoded Dutch policy text reflecting what the site actually does: Salonized redirect (external), Cloudflare Web Analytics (cookieless), TinaCMS. The baseline copy in `src/app/privacy/` and `src/app/cookies/` must be reviewed by a Belgian lawyer before launch. `/cookies` also exposes a "Cookie-instellingen openen" button wired to `openCookiePreferences()`.
 
 ### 4.9 Footer (all pages)
 
@@ -365,10 +365,8 @@ Content that's hardcoded can still be changed later — she'd just ask the devel
 - Static map image on `/contact` by default (PNG/WebP, lazy-loaded).
 - Interactive Google Maps iframe loads only on explicit user click ("Toon interactieve kaart").
 
-### Contact form backend
-- Cloudflare Worker + Resend API (preferred — stays in ecosystem, free tier).
-- Alternative: Formspree free tier if Worker is overkill for the agent to set up.
-- Honeypot field + rate limiting. No CAPTCHA (privacy-friendly).
+### Contact flow
+- No contact form. The `/contact` page surfaces address, phone (`tel:`), email (`mailto:`), and a Salonized booking CTA. Inquiries route through those channels.
 
 ---
 
@@ -388,7 +386,7 @@ Content that's hardcoded can still be changed later — she'd just ask the devel
 - TinaCMS edit → commit → Cloudflare rebuild pipeline works end to end (demonstrate with a price change).
 - Lighthouse scores hit §8 budget on mobile (test with real 4G throttling).
 - Dutch spellcheck passes on all static strings (run `cspell` with NL dictionary).
-- Contact form delivers to `info@sorelaxmassage.be`.
+- `/contact` surfaces phone, email, opening hours, and an external Salonized booking CTA.
 - Cookie banner shows on first visit, stores the user's choice, and can be re-opened via `/cookies`. No third-party scripts load on our origin (Salonized is external-only), so there is nothing to script-gate today; the banner is a legal notice plus future-proofing.
 - Zero axe critical/serious accessibility issues.
 - Site works without JavaScript enabled (graceful degradation — content visible, booking falls back to phone/email CTA).
@@ -401,11 +399,9 @@ Content that's hardcoded can still be changed later — she'd just ask the devel
 NEXT_PUBLIC_SITE_URL=https://sorelaxmassage.be
 NEXT_PUBLIC_TINA_CLIENT_ID=
 TINA_TOKEN=
-RESEND_API_KEY=                    # if using Worker+Resend
-CONTACT_FORM_TO=info@sorelaxmassage.be
 ```
 
-No Salonized env vars needed — URLs are CMS-managed.
+No Salonized env vars needed — URLs are CMS-managed. No form-related vars — there is no form backend.
 
 ---
 

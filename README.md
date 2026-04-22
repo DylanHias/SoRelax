@@ -67,8 +67,6 @@ fall back to sane placeholders.
 | `NEXT_PUBLIC_TINA_CLIENT_ID`, `TINA_TOKEN` | `/admin` against Tina Cloud (prod) — not needed for local dev | Wired |
 | `NEXT_PUBLIC_SALONIZED_WIDGET_URL`, `NEXT_PUBLIC_SALONIZED_GIFTCARD_URL` | Fallback for booking widget + gift-card CTA when the CMS field is empty | CMS-owned |
 | `NEXT_PUBLIC_INSTAGRAM_URL`, `NEXT_PUBLIC_FACEBOOK_URL` | Fallback for footer social links when the CMS field is empty | CMS-owned |
-| `NEXT_PUBLIC_CONTACT_ENDPOINT` | URL the `/contact` form POSTs to (Cloudflare Worker in `./worker` or Formspree) | Wired |
-| `RESEND_API_KEY`, `CONTACT_FORM_TO`, `CONTACT_FORM_FROM`, `ALLOWED_ORIGIN` | Configured on the Worker itself, not on the Next.js build | Worker-only |
 
 ## Content
 
@@ -135,10 +133,9 @@ Field labels and help text in the admin UI are Dutch — Tanja is the editor.
   and `src/app/cookies/` (per brief §7 — legal pages are hardcoded). The
   baseline text is a starting draft; have it reviewed by a Belgian
   lawyer before launch.
-- **Contact form backend.** Cloudflare Worker in `./worker` (Resend as
-  sender, JSON in/out, honeypot, CORS via `ALLOWED_ORIGIN`).
-  `ContactForm` POSTs JSON to `NEXT_PUBLIC_CONTACT_ENDPOINT`; when unset it
-  keeps the M1 stub behaviour.
+- **No contact form.** `/contact` surfaces address, phone, email, opening
+  hours, and a direct Salonized booking CTA. All bookings and inquiries
+  go through Salonized — no form backend, no Resend, no Worker.
 
 **M4 — SEO, performance, deploy.**
 - **JSON-LD** structured data on the key routes: `LocalBusiness`
@@ -175,11 +172,11 @@ Flagged as placeholders or stubs in the current code — needs client input:
   `salonizedLink` on `treatments.json`). Env vars act as fallback until the
   CMS fields are filled in `/admin`.
 - **Legal review.** `/privacy` and `/cookies` contain a reasonable
-  baseline draft based on what the site actually does (contact form,
-  Salonized redirect, Cloudflare Web Analytics, TinaCMS, Resend). Have a
-  Belgian lawyer verify the copy, the bewaartermijnen, and the listed
-  verwerkers before launch. Update the `LAST_UPDATED` constant at the
-  top of each page when the text changes.
+  baseline draft based on what the site actually does (Salonized redirect,
+  Cloudflare Web Analytics, TinaCMS). Have a Belgian lawyer verify the
+  copy, the bewaartermijnen, and the listed verwerkers before launch.
+  Update the `LAST_UPDATED` constant at the top of each page when the
+  text changes.
 - **Social handles.** Instagram and Facebook URLs (optional).
 - **Opening hours.** Currently seeded Mon–Fri 09:00–18:00, Sat on request,
   Sun closed — confirm with Tanja.
@@ -190,27 +187,6 @@ Flagged as placeholders or stubs in the current code — needs client input:
   Pages.
 - **`sorelaxmassage.be` favicon and OG image.** `public/favicon.ico` is the
   Next.js default; replace with a real favicon set + 1200×630 OG image.
-
-## Contact form worker
-
-The Worker in `./worker` is a tiny Cloudflare Worker that forwards `/contact`
-submissions via Resend. It runs independently from the Next.js build.
-
-```bash
-cd worker
-pnpm install
-wrangler secret put RESEND_API_KEY       # once, at setup
-wrangler deploy
-```
-
-After deploy, copy the Worker's URL (e.g.
-`https://sorelax-contact.<account>.workers.dev`) into
-`NEXT_PUBLIC_CONTACT_ENDPOINT` in the Pages project's build env and redeploy.
-Tweak `CONTACT_FORM_FROM`, `CONTACT_FORM_TO`, and `ALLOWED_ORIGIN` in
-`worker/wrangler.toml`. The sender must be on a Resend-verified domain.
-
-To swap to Formspree, skip the Worker and point `NEXT_PUBLIC_CONTACT_ENDPOINT`
-at the Formspree form URL — the form posts the same JSON shape.
 
 ## Deploy
 
@@ -237,8 +213,6 @@ it directly without any Pages Functions or Workers runtime.
    - `NEXT_PUBLIC_SITE_URL=https://sorelaxmassage.be`
    - `NEXT_PUBLIC_TINA_CLIENT_ID=…`
    - `TINA_TOKEN=…` (**encrypted**)
-   - `NEXT_PUBLIC_CONTACT_ENDPOINT=https://sorelax-contact.<account>.workers.dev`
-     (once the Worker is deployed)
    - Optional fallbacks (leave empty if the CMS already owns them):
      `NEXT_PUBLIC_SALONIZED_WIDGET_URL`,
      `NEXT_PUBLIC_SALONIZED_GIFTCARD_URL`,
@@ -265,12 +239,6 @@ Tanja edits content in Tina Cloud → Tina commits to `main` → Pages rebuilds.
    Rebuild completes in ~60–90 s; the updated content is live after
    Cloudflare's edge cache purge finishes.
 
-### Contact form Worker
-
-See [Contact form worker](#contact-form-worker) below. Deploy it first,
-then paste its URL into `NEXT_PUBLIC_CONTACT_ENDPOINT` on the Pages
-project and redeploy.
-
 ### Smoke test after first deploy
 
 - `curl -I https://sorelaxmassage.be/` → `200`
@@ -279,7 +247,7 @@ project and redeploy.
   `"@type":["LocalBusiness","HealthAndBeautyBusiness"]`
 - `/behandelingen` JSON-LD contains one `Service` entry per treatment
 - Lighthouse mobile (real 4G throttling, Incognito) hits brief §8 budgets
-- Contact form submits end-to-end and the Worker e-mails via Resend
+- `/contact` Salonized CTA opens the booking widget in a new tab
 
 ## Conventions
 

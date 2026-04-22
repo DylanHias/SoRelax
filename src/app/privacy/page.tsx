@@ -54,8 +54,10 @@ export default function PrivacyPage() {
             <p>Afhankelijk van hoe je met ons in contact komt verwerken wij:</p>
             <ul className="mt-3 list-disc space-y-1 pl-5">
               <li>
-                <strong>Contactformulier:</strong> naam, e-mailadres, eventueel
-                telefoonnummer en de inhoud van je bericht.
+                <strong>Rechtstreeks contact:</strong> wanneer je ons belt of
+                een e-mail stuurt verwerken wij de gegevens die je zelf deelt
+                (naam, e-mailadres of telefoonnummer en de inhoud van je
+                vraag).
               </li>
               <li>
                 <strong>Reservering via Salonized:</strong> gegevens die je
@@ -122,10 +124,6 @@ export default function PrivacyPage() {
                 bezoekersstatistieken.
               </li>
               <li>
-                <strong>Resend</strong> — verzending van het contactformulier
-                naar ons e-mailadres.
-              </li>
-              <li>
                 <strong>TinaCMS</strong> — beheer van de inhoud van de website.
               </li>
             </ul>
@@ -135,7 +133,7 @@ export default function PrivacyPage() {
             <h2>6. Hoe lang bewaren wij gegevens?</h2>
             <p>
               We bewaren gegevens niet langer dan nodig voor het doel waarvoor
-              ze werden verzameld. Berichten via het contactformulier worden
+              ze werden verzameld. E-mails en telefoongesprekken worden
               doorgaans binnen 12 maanden gewist, tenzij er een lopende
               behandelovereenkomst is. Medische en fiscale gegevens worden
               bewaard volgens de wettelijke bewaartermijnen.
