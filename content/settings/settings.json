@@ -1,0 +1,38 @@
+{
+  "openingHours": [
+    {
+      "day": "Maandag",
+      "hours": "09:00 – 18:00"
+    },
+    {
+      "day": "Dinsdag",
+      "hours": "09:00 – 18:00"
+    },
+    {
+      "day": "Woensdag",
+      "hours": "09:00 – 18:00"
+    },
+    {
+      "day": "Donderdag",
+      "hours": "09:00 – 18:00"
+    },
+    {
+      "day": "Vrijdag",
+      "hours": "09:00 – 18:00"
+    },
+    {
+      "day": "Zaterdag",
+      "hours": "Op afspraak"
+    },
+    {
+      "day": "Zondag",
+      "hours": "Gesloten"
+    }
+  ],
+  "salonizedOpenWidgetUrl": "https://sorelax.salonized.com/widget_bookings/new",
+  "salonizedGiftcardUrl": "https://sorelax.salonized.com/widget_giftcards/new",
+  "socialLinks": {
+    "instagram": "https://www.instagram.com/so_relax_massagetherapeut/",
+    "facebook": "https://www.facebook.com/p/sorelax-61568681545331/"
+  }
+}

@@ -17,8 +17,9 @@
 /.next/
 /out/
 
-# tinacms (future)
-/.tina/__generated__/
+# tinacms (generated)
+/tina/__generated__/
+/public/admin/
 
 # production
 /build
