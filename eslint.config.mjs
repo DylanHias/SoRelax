@@ -20,6 +20,7 @@ const eslintConfig = [
       "next-env.d.ts",
       "tina/__generated__/**",
       "public/admin/**",
+      "worker/**",
     ],
   },
 ];

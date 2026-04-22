@@ -65,10 +65,10 @@ fall back to sane placeholders.
 | --- | --- | --- |
 | `NEXT_PUBLIC_SITE_URL` | Absolute URLs in metadata, sitemap, OG tags | Always |
 | `NEXT_PUBLIC_TINA_CLIENT_ID`, `TINA_TOKEN` | `/admin` against Tina Cloud (prod) — not needed for local dev | Wired |
-| `NEXT_PUBLIC_IUBENDA_SITE_ID`, `NEXT_PUBLIC_IUBENDA_COOKIE_POLICY_ID` | Privacy + cookie policy embeds, cookie banner | M3 |
 | `NEXT_PUBLIC_SALONIZED_WIDGET_URL`, `NEXT_PUBLIC_SALONIZED_GIFTCARD_URL` | Fallback for booking widget + gift-card CTA when the CMS field is empty | CMS-owned |
 | `NEXT_PUBLIC_INSTAGRAM_URL`, `NEXT_PUBLIC_FACEBOOK_URL` | Fallback for footer social links when the CMS field is empty | CMS-owned |
-| `RESEND_API_KEY`, `CONTACT_FORM_TO` | Contact-form delivery | M3 (server-only) |
+| `NEXT_PUBLIC_CONTACT_ENDPOINT` | URL the `/contact` form POSTs to (Cloudflare Worker in `./worker` or Formspree) | Wired |
+| `RESEND_API_KEY`, `CONTACT_FORM_TO`, `CONTACT_FORM_FROM`, `ALLOWED_ORIGIN` | Configured on the Worker itself, not on the Next.js build | Worker-only |
 
 ## Content
 
@@ -116,17 +116,52 @@ Field labels and help text in the admin UI are Dutch — Tanja is the editor.
   required); production editing against Tina Cloud once
   `NEXT_PUBLIC_TINA_CLIENT_ID` + `TINA_TOKEN` are set
 
+**M3 — Third-party integrations.**
+- **Salonized, external-only.** All booking CTAs open the Salonized widget
+  in a new tab — no in-app iframe or modal. `BookingButton` resolves the
+  per-service `salonizedLink` from the CMS when provided, otherwise the
+  default `salonizedOpenWidgetUrl` from settings. `/afspraak` is an info +
+  redirect page (address, hours, cancellation policy, "Open online agenda"
+  CTA). No Salonized script runs on our origin, so nothing to defer or
+  gate.
+- **Cookie consent (DIY).** `CookieConsent` renders a client-side banner
+  with three categories (Noodzakelijk / Analyse / Marketing) and stores
+  the choice in `localStorage` under `sorelax-consent` (versioned). A
+  `useConsent()` hook and a `sorelax-consent-change` event are available
+  for any future third-party script that needs gating. `openCookiePreferences()`
+  re-opens the banner from anywhere — wired to the "Cookie-instellingen"
+  button on `/cookies`. No third-party consent vendor is used.
+- **Privacy + cookie policies.** Hardcoded Dutch copy in `src/app/privacy/`
+  and `src/app/cookies/` (per brief §7 — legal pages are hardcoded). The
+  baseline text is a starting draft; have it reviewed by a Belgian
+  lawyer before launch.
+- **Contact form backend.** Cloudflare Worker in `./worker` (Resend as
+  sender, JSON in/out, honeypot, CORS via `ALLOWED_ORIGIN`).
+  `ContactForm` POSTs JSON to `NEXT_PUBLIC_CONTACT_ENDPOINT`; when unset it
+  keeps the M1 stub behaviour.
+
+**M4 — SEO, performance, deploy.**
+- **JSON-LD** structured data on the key routes: `LocalBusiness`
+  (+`HealthAndBeautyBusiness`) on `/` and `/contact`, `Person` on
+  `/over-mij`, one `Service` per treatment on `/behandelingen`.
+  Schemas live in `src/lib/schema.ts`; pages render them via the
+  `<JsonLd>` helper. `openingHoursSpecification` is derived from the CMS
+  settings and skips free-text rows like "Op afspraak".
+- **Canonical URLs** via `alternates.canonical` on every route, including
+  home.
+- **Deploy docs** for Cloudflare Pages + custom domain + Tina → Pages
+  build webhook (see [Deploy](#deploy) below).
+- **Editor guide for Tanja** in `docs/editor-handleiding.md` — Dutch, two
+  pages, covers login, price updates, testimonials, opening hours.
+
 ## What's next
 
-- **M3 — Third-party integrations.** Salonized widgets (lazy-load: floating
-  button on idle/interaction, inline on `/afspraak`, per-service CTAs);
-  iubenda privacy/cookie policy + consent banner gating Salonized; contact
-  form → Cloudflare Worker + Resend (preferred) or Formspree.
-- **M4 — SEO, performance, a11y, deploy.** JSON-LD (`LocalBusiness`,
-  `Service`, `Person`), image optimization pass, axe + Lighthouse audits
-  against brief §8 (mobile ≥ 95 Perf/A11y/BP, SEO = 100, LCP < 2.0s),
-  Cloudflare Pages + custom domain + TinaCMS → build webhook, Dutch editor
-  guide for Tanja.
+- **Pre-launch audits.** Run Lighthouse mobile (real 4G throttling) and
+  axe against brief §8 budgets (Perf ≥ 95, A11y ≥ 95, BP ≥ 95, SEO = 100,
+  LCP < 2.0s, CLS < 0.05, INP < 150ms). These are acceptance criteria,
+  not aspirations — do not declare launch-ready without them.
+- **Legal review** of `/privacy` and `/cookies` by a Belgian lawyer.
+- **Blocking items** — see the list below; most need client input.
 
 ## Open items blocking full completion (brief §13)
 
@@ -139,9 +174,12 @@ Flagged as placeholders or stubs in the current code — needs client input:
   per-service custom widgets. Owned by TinaCMS (`settings.json` + per-card
   `salonizedLink` on `treatments.json`). Env vars act as fallback until the
   CMS fields are filled in `/admin`.
-- **iubenda account + policy IDs.** Privacy policy site ID + cookie policy
-  ID. Until these are configured, `/privacy` and `/cookies` show a
-  placeholder and the cookie banner is absent.
+- **Legal review.** `/privacy` and `/cookies` contain a reasonable
+  baseline draft based on what the site actually does (contact form,
+  Salonized redirect, Cloudflare Web Analytics, TinaCMS, Resend). Have a
+  Belgian lawyer verify the copy, the bewaartermijnen, and the listed
+  verwerkers before launch. Update the `LAST_UPDATED` constant at the
+  top of each page when the text changes.
 - **Social handles.** Instagram and Facebook URLs (optional).
 - **Opening hours.** Currently seeded Mon–Fri 09:00–18:00, Sat on request,
   Sun closed — confirm with Tanja.
@@ -153,18 +191,95 @@ Flagged as placeholders or stubs in the current code — needs client input:
 - **`sorelaxmassage.be` favicon and OG image.** `public/favicon.ico` is the
   Next.js default; replace with a real favicon set + 1200×630 OG image.
 
-## Deploy (coming in M4)
+## Contact form worker
 
-Target: Cloudflare Pages (static hosting on the free tier, EU edge). Build
-command `pnpm build`, output directory `out`. Custom domain
-`sorelaxmassage.be`.
+The Worker in `./worker` is a tiny Cloudflare Worker that forwards `/contact`
+submissions via Resend. It runs independently from the Next.js build.
 
-Rebuild webhook (set up in M4):
+```bash
+cd worker
+pnpm install
+wrangler secret put RESEND_API_KEY       # once, at setup
+wrangler deploy
+```
 
-1. Cloudflare Pages → project → Settings → Build → Deploy hooks →
-   create hook named `tina-content-change`. Copy the URL.
-2. Tina Cloud → project → Settings → Build hooks → paste the URL.
-   Tina commits to `main` on save → Cloudflare rebuilds in ~60–90 s.
+After deploy, copy the Worker's URL (e.g.
+`https://sorelax-contact.<account>.workers.dev`) into
+`NEXT_PUBLIC_CONTACT_ENDPOINT` in the Pages project's build env and redeploy.
+Tweak `CONTACT_FORM_FROM`, `CONTACT_FORM_TO`, and `ALLOWED_ORIGIN` in
+`worker/wrangler.toml`. The sender must be on a Resend-verified domain.
+
+To swap to Formspree, skip the Worker and point `NEXT_PUBLIC_CONTACT_ENDPOINT`
+at the Formspree form URL — the form posts the same JSON shape.
+
+## Deploy
+
+Target: **Cloudflare Pages** on the free tier (static hosting, EU edge).
+`output: 'export'` means the built site is just HTML/CSS/JS — Pages serves
+it directly without any Pages Functions or Workers runtime.
+
+### One-time setup
+
+1. **Provision Tina Cloud.** Create a project at
+   [app.tina.io](https://app.tina.io), point it at this GitHub repo's
+   `main` branch. Copy the project's `Client ID` and a read-only `Token`.
+2. **Create the Pages project.**
+   - Cloudflare dashboard → Workers & Pages → Create → Pages → Connect to
+     Git → select the repo.
+   - **Framework preset:** Next.js (Static HTML Export).
+   - **Build command:** `pnpm build`
+   - **Build output directory:** `out`
+   - **Root directory:** leave blank.
+   - **Node version:** `NODE_VERSION=20` as a build env variable.
+3. **Build env variables** (Pages → Settings → Environment variables,
+   *Production* — mirror to *Preview* if you want PR previews to hit real
+   services):
+   - `NEXT_PUBLIC_SITE_URL=https://sorelaxmassage.be`
+   - `NEXT_PUBLIC_TINA_CLIENT_ID=…`
+   - `TINA_TOKEN=…` (**encrypted**)
+   - `NEXT_PUBLIC_CONTACT_ENDPOINT=https://sorelax-contact.<account>.workers.dev`
+     (once the Worker is deployed)
+   - Optional fallbacks (leave empty if the CMS already owns them):
+     `NEXT_PUBLIC_SALONIZED_WIDGET_URL`,
+     `NEXT_PUBLIC_SALONIZED_GIFTCARD_URL`,
+     `NEXT_PUBLIC_INSTAGRAM_URL`, `NEXT_PUBLIC_FACEBOOK_URL`.
+   Switch the build script to `pnpm build:cloud` once `TINA_TOKEN` is set
+   so `/admin` authenticates against Tina Cloud instead of the local
+   filesystem.
+4. **Custom domain.** Pages → Custom domains → add `sorelaxmassage.be`
+   and `www.sorelaxmassage.be`. Cloudflare issues the TLS cert
+   automatically when DNS points at Pages (CNAME flattening on the root
+   if the domain is on Cloudflare DNS). Set up a redirect rule
+   `www → apex` (or vice versa — pick one canonical host).
+5. **Enable Cloudflare Web Analytics** (Pages → Analytics →
+   Web Analytics). It's cookieless so it does not require consent.
+
+### Content-change rebuild webhook
+
+Tanja edits content in Tina Cloud → Tina commits to `main` → Pages rebuilds.
+
+1. Cloudflare Pages → project → Settings → Builds & deployments →
+   **Deploy hooks** → create a hook named `tina-content-change` on
+   branch `main`. Copy the URL.
+2. Tina Cloud → project → Configuration → **Webhook** → paste the URL.
+   Rebuild completes in ~60–90 s; the updated content is live after
+   Cloudflare's edge cache purge finishes.
+
+### Contact form Worker
+
+See [Contact form worker](#contact-form-worker) below. Deploy it first,
+then paste its URL into `NEXT_PUBLIC_CONTACT_ENDPOINT` on the Pages
+project and redeploy.
+
+### Smoke test after first deploy
+
+- `curl -I https://sorelaxmassage.be/` → `200`
+- `/sitemap.xml` and `/robots.txt` resolve
+- View-source on `/` includes `application/ld+json` with
+  `"@type":["LocalBusiness","HealthAndBeautyBusiness"]`
+- `/behandelingen` JSON-LD contains one `Service` entry per treatment
+- Lighthouse mobile (real 4G throttling, Incognito) hits brief §8 budgets
+- Contact form submits end-to-end and the Worker e-mails via Resend
 
 ## Conventions
 

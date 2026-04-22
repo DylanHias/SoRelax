@@ -31,8 +31,8 @@ Build a production-ready marketing website for **So'Relax**, a solo massage ther
 | Hosting | **Cloudflare Pages** | Free tier, EU edge |
 | Booking | **Salonized** embed | Inline on `/afspraak`, floating button sitewide |
 | Gift vouchers | **Salonized giftcard widget** | External link only |
-| Legal | **iubenda** embed | Privacy + Cookie Policy, NL |
-| Cookie consent | **iubenda Cookie Solution** | GDPR-compliant, blocks Salonized until consent |
+| Legal | Hardcoded Dutch copy | Privacy + Cookie Policy on `/privacy` and `/cookies`, lawyer-reviewed before launch |
+| Cookie consent | **DIY client-side banner** | GDPR-compliant, localStorage-backed, 3 categories (noodzakelijk / analyse / marketing) |
 | Analytics | **Cloudflare Web Analytics** | Free, cookieless, no banner needed for it |
 | Forms | **Cloudflare Workers + Resend** or **Formspree** free tier | Contact form only |
 | Fonts | `next/font` self-hosted | See §5 |
@@ -55,8 +55,8 @@ Tina Cloud free tier = 2 users, 1000 docs, no branching, may change. For a solo 
 /cadeaubon               Gift voucher info → external Salonized link
 /contact                 Contact info + form + map
 /algemene-voorwaarden    Terms
-/privacy                 Privacy Policy (iubenda embed)
-/cookies                 Cookie Policy (iubenda embed)
+/privacy                 Privacy Policy (hardcoded)
+/cookies                 Cookie Policy (hardcoded) + "Cookie-instellingen" button
 /admin                   TinaCMS admin (auth-protected)
 ```
 
@@ -148,7 +148,7 @@ Full content from source's "Reservaties / Betaalmethoden / Cadeaubonnen / Hygië
 
 ### 4.8 Privacy & Cookies
 
-Pages embed iubenda's official script. No custom content needed.
+Pages contain hardcoded Dutch policy text reflecting what the site actually does: contact form, Salonized redirect (external), Cloudflare Web Analytics (cookieless), TinaCMS, Resend. The baseline copy in `src/app/privacy/` and `src/app/cookies/` must be reviewed by a Belgian lawyer before launch. `/cookies` also exposes a "Cookie-instellingen openen" button wired to `openCookiePreferences()`.
 
 ### 4.9 Footer (all pages)
 
@@ -348,17 +348,17 @@ Content that's hardcoded can still be changed later — she'd just ask the devel
 
 ## 9. Third-Party Integrations
 
-### Salonized
-- **Floating button:** sitewide, lazy-loaded (load on first user interaction or after 3s idle).
-- **Inline widget:** `/afspraak`, full-width embed.
-- **Per-treatment CTAs:** Salonized custom widget links per service where configured.
-- Widget URLs stored in TinaCMS `settings.json` — Tanja can update if her account changes.
-- All Salonized scripts blocked by iubenda cookie consent until user accepts.
+### Salonized (external-only)
+- **All booking CTAs open Salonized in a new tab.** No in-app iframe, modal, or embed script. This is a deliberate simplification: it sidesteps the LCP cost of their embed and leaves nothing third-party to gate on consent.
+- **Per-treatment CTAs:** `BookingButton` resolves per-service `salonizedLink` from the CMS when provided, else the default `salonizedOpenWidgetUrl`.
+- **Giftcards:** external link from `/cadeaubon` to `salonizedGiftcardUrl`.
+- Widget URLs stored in TinaCMS `settings.json` (with env-var fallback) — Tanja can update if her account changes.
 
-### iubenda
-- Privacy Policy and Cookie Policy embedded via official scripts on `/privacy` and `/cookies`.
-- Cookie Solution banner for NL, GDPR strict.
-- Non-essential scripts (Salonized) gated behind consent.
+### Cookie consent (DIY)
+- Client-side banner (`src/components/CookieConsent.tsx`) with three categories: Noodzakelijk (always on) / Analyse / Marketing.
+- Choice stored in `localStorage` under `sorelax-consent` (versioned). `useConsent()` hook + `sorelax-consent-change` event for gating future scripts.
+- `openCookiePreferences()` re-opens the banner — wired to the `/cookies` preferences button.
+- Privacy + cookie policy pages are hardcoded Dutch copy; lawyer review before launch.
 - Cloudflare Web Analytics does NOT need consent (cookieless, no PII).
 
 ### Maps
@@ -389,7 +389,7 @@ Content that's hardcoded can still be changed later — she'd just ask the devel
 - Lighthouse scores hit §8 budget on mobile (test with real 4G throttling).
 - Dutch spellcheck passes on all static strings (run `cspell` with NL dictionary).
 - Contact form delivers to `info@sorelaxmassage.be`.
-- Cookie banner blocks Salonized until consent; accepting consent loads widget.
+- Cookie banner shows on first visit, stores the user's choice, and can be re-opened via `/cookies`. No third-party scripts load on our origin (Salonized is external-only), so there is nothing to script-gate today; the banner is a legal notice plus future-proofing.
 - Zero axe critical/serious accessibility issues.
 - Site works without JavaScript enabled (graceful degradation — content visible, booking falls back to phone/email CTA).
 
@@ -401,8 +401,6 @@ Content that's hardcoded can still be changed later — she'd just ask the devel
 NEXT_PUBLIC_SITE_URL=https://sorelaxmassage.be
 NEXT_PUBLIC_TINA_CLIENT_ID=
 TINA_TOKEN=
-NEXT_PUBLIC_IUBENDA_SITE_ID=
-NEXT_PUBLIC_IUBENDA_COOKIE_POLICY_ID=
 RESEND_API_KEY=                    # if using Worker+Resend
 CONTACT_FORM_TO=info@sorelaxmassage.be
 ```
@@ -419,7 +417,7 @@ No Salonized env vars needed — URLs are CMS-managed.
 4. TinaCMS setup: schema, seed data, `/admin` route.
 5. Wire TinaCMS reads into treatments / testimonials / settings consumers.
 6. Salonized integration (floating button lazy-load + inline + per-service).
-7. iubenda integration (legal pages + cookie banner + script gating).
+7. Cookie consent (DIY banner + hardcoded privacy/cookie policy pages).
 8. Contact form backend.
 9. SEO pass: metadata, JSON-LD, sitemap, robots.
 10. Performance pass: image optimization, font loading, third-party deferral.
@@ -434,6 +432,6 @@ No Salonized env vars needed — URLs are CMS-managed.
 - Actual Salonized widget URLs (main + giftcard + per-service custom widgets).
 - Social media handles (Instagram, Facebook).
 - Real photos of Tanja and the salon interior.
-- iubenda account + policy IDs.
+- Lawyer review of the hardcoded privacy + cookie policy copy on `/privacy` and `/cookies` (Dutch, Belgian jurisdiction). Update `LAST_UPDATED` when the text changes.
 - Confirm `sorelaxmassage.be` domain is registered and DNS can point to Cloudflare.
 - Whether Tanja will configure Mollie/Stripe in Salonized for giftcards (if no → switch `/cadeaubon` to contact CTA).

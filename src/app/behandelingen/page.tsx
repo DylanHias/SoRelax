@@ -5,7 +5,9 @@ import { Accordion } from "@/components/ui/Accordion";
 import { BookingButton } from "@/components/BookingButton";
 import { ArrowRightIcon, ExternalLinkIcon } from "@/components/ui/Icons";
 import { CtaBand } from "@/components/sections/CtaBand";
-import { getTreatmentsByCategory, type Treatment } from "@/content/treatments";
+import { JsonLd } from "@/components/JsonLd";
+import { getTreatments, getTreatmentsByCategory, type Treatment } from "@/content/treatments";
+import { serviceSchema } from "@/lib/schema";
 import { formatPrice } from "@/lib/format";
 
 export const metadata: Metadata = {
@@ -18,9 +20,11 @@ export const metadata: Metadata = {
 export default function BehandelingenPage() {
   const therapeutic = getTreatmentsByCategory("therapeutic");
   const relaxation = getTreatmentsByCategory("relaxation");
+  const serviceSchemas = getTreatments().map(serviceSchema);
 
   return (
     <>
+      <JsonLd data={serviceSchemas} />
       <Section>
         <Container>
           <div className="max-w-2xl">
@@ -134,7 +138,7 @@ function TreatmentGroup({ eyebrow, heading, description, items, className = "" }
                 </div>
               )}
               <div className="pt-2">
-                <BookingButton variant="primary">
+                <BookingButton variant="primary" href={t.salonizedLink || undefined}>
                   Boek nu
                   <ArrowRightIcon className="h-4 w-4" />
                 </BookingButton>

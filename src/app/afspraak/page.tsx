@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { Container } from "@/components/ui/Container";
 import { Section } from "@/components/ui/Section";
 import { ButtonLink } from "@/components/ui/Button";
-import { MailIcon, PhoneIcon } from "@/components/ui/Icons";
+import { ExternalLinkIcon, MailIcon, PhoneIcon } from "@/components/ui/Icons";
 import { getSettings } from "@/content/settings";
 import { siteConfig } from "@/lib/site";
 
@@ -20,56 +20,63 @@ export default function AfspraakPage() {
   return (
     <>
       <Section>
-        <Container>
-          <div className="max-w-2xl">
-            <p className="text-xs uppercase tracking-[0.18em] text-[var(--color-accent-primary)] font-medium">
-              Reserveren
-            </p>
-            <h1 className="mt-3">Plan jouw afspraak</h1>
-            <p className="mt-6 text-[var(--color-text-secondary)]">
-              Kies een behandeling en een tijdstip dat je past via de online agenda
-              hieronder. Twijfel je welke behandeling het beste past bij je klachten?
-              Bel of mail gerust — ik help je graag verder.
-            </p>
-          </div>
+        <Container width="prose">
+          <p className="text-xs uppercase tracking-[0.18em] text-[var(--color-accent-primary)] font-medium">
+            Reserveren
+          </p>
+          <h1 className="mt-3">Plan jouw afspraak</h1>
+          <p className="mt-6 text-[var(--color-text-secondary)]">
+            Boekingen lopen via onze online agenda. Je kiest daar zelf een
+            behandeling en een tijdstip dat past. Twijfel je welke behandeling
+            het beste bij je klachten past? Bel of mail gerust — ik help je
+            graag verder.
+          </p>
 
           {hasWidget ? (
-            <div className="mt-10 overflow-hidden rounded-[var(--radius-md)] border border-[var(--color-border)] bg-[var(--color-surface)]">
-              <iframe
-                title="So'Relax online agenda"
-                src={salonizedOpenWidgetUrl}
-                loading="lazy"
-                allow="payment *; clipboard-write"
-                className="block h-[760px] w-full border-0 sm:h-[820px]"
-              />
+            <div className="mt-10 flex flex-wrap items-center gap-3">
+              <ButtonLink
+                href={salonizedOpenWidgetUrl}
+                variant="primary"
+                size="lg"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                Open online agenda
+                <ExternalLinkIcon className="h-4 w-4" />
+              </ButtonLink>
+              <ButtonLink
+                href={`tel:${siteConfig.contact.phoneTel}`}
+                variant="secondary"
+                size="lg"
+              >
+                <PhoneIcon className="h-4 w-4" />
+                {siteConfig.contact.phone}
+              </ButtonLink>
             </div>
           ) : (
-            <div className="mt-10 flex min-h-[500px] w-full items-center justify-center rounded-[var(--radius-md)] border border-dashed border-[var(--color-border)] bg-[var(--color-surface)] p-10 text-center">
-              <div className="max-w-md">
-                <p className="font-serif text-xl text-[var(--color-text-primary)]">
-                  Online agenda wordt binnenkort geactiveerd
-                </p>
-                <p className="mt-4 text-sm text-[var(--color-text-secondary)]">
-                  Tot zolang kan je rechtstreeks contact opnemen om een afspraak in
-                  te plannen.
-                </p>
-                <div className="mt-6 flex flex-col items-center justify-center gap-3 sm:flex-row">
-                  <ButtonLink href={`tel:${siteConfig.contact.phoneTel}`} variant="primary">
-                    <PhoneIcon className="h-4 w-4" />
-                    {siteConfig.contact.phone}
-                  </ButtonLink>
-                  <ButtonLink href={`mailto:${siteConfig.contact.email}`} variant="secondary">
-                    <MailIcon className="h-4 w-4" />
-                    Mail mij
-                  </ButtonLink>
-                </div>
-              </div>
+            <div className="mt-10 flex flex-wrap items-center gap-3">
+              <ButtonLink
+                href={`tel:${siteConfig.contact.phoneTel}`}
+                variant="primary"
+                size="lg"
+              >
+                <PhoneIcon className="h-4 w-4" />
+                {siteConfig.contact.phone}
+              </ButtonLink>
+              <ButtonLink
+                href={`mailto:${siteConfig.contact.email}`}
+                variant="secondary"
+                size="lg"
+              >
+                <MailIcon className="h-4 w-4" />
+                Mail mij
+              </ButtonLink>
             </div>
           )}
 
           {hasWidget && (
             <p className="mt-4 text-xs text-[var(--color-text-secondary)]">
-              Lukt het boeken niet? Bel gerust{" "}
+              De agenda opent in een nieuw venster. Lukt het boeken niet? Bel{" "}
               <a href={`tel:${siteConfig.contact.phoneTel}`} className="text-[var(--color-accent-primary)]">
                 {siteConfig.contact.phone}
               </a>{" "}

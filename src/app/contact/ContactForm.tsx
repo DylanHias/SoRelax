@@ -24,19 +24,47 @@ export function ContactForm() {
     setStatus("submitting");
     setErrorMessage("");
 
-    // M1 placeholder: backend comes in M3 (Cloudflare Worker + Resend or Formspree).
-    // For now we simulate a success so the UX is testable.
-    await new Promise((resolve) => setTimeout(resolve, 600));
+    const endpoint = process.env.NEXT_PUBLIC_CONTACT_ENDPOINT;
 
-    if (process.env.NODE_ENV !== "production") {
-      console.warn(
-        "[ContactForm] Backend not yet wired — message logged to console only.",
-        Object.fromEntries(data.entries()),
-      );
+    if (!endpoint) {
+      // Backend endpoint not yet configured — keep UX testable locally.
+      await new Promise((resolve) => setTimeout(resolve, 400));
+      if (process.env.NODE_ENV !== "production") {
+        console.warn(
+          "[ContactForm] NEXT_PUBLIC_CONTACT_ENDPOINT not set — logging only.",
+          Object.fromEntries(data.entries()),
+        );
+      }
+      setStatus("success");
+      form.reset();
+      return;
     }
 
-    setStatus("success");
-    form.reset();
+    try {
+      const payload = {
+        name: String(data.get("name") ?? ""),
+        email: String(data.get("email") ?? ""),
+        phone: String(data.get("phone") ?? ""),
+        message: String(data.get("message") ?? ""),
+        company: String(data.get("company") ?? ""),
+      };
+      const res = await fetch(endpoint, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      });
+      if (!res.ok) {
+        const body = (await res.json().catch(() => null)) as { error?: string } | null;
+        setErrorMessage(body?.error ?? "Er ging iets mis, probeer het later opnieuw.");
+        setStatus("error");
+        return;
+      }
+      setStatus("success");
+      form.reset();
+    } catch {
+      setErrorMessage("Geen verbinding. Controleer je netwerk en probeer opnieuw.");
+      setStatus("error");
+    }
   }
 
   return (

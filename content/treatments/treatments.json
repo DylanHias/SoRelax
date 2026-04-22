@@ -10,7 +10,7 @@
       "priceAmount": 55,
       "priceType": "fixed",
       "duration": "60 min",
-      "salonizedLink": "/afspraak"
+      "salonizedLink": ""
     },
     {
       "id": "voetreflexologie",
@@ -22,7 +22,7 @@
       "priceAmount": 70,
       "priceType": "fixed",
       "duration": "60 min",
-      "salonizedLink": "/afspraak"
+      "salonizedLink": ""
     },
     {
       "id": "deep-tissue-cupping",
@@ -34,7 +34,7 @@
       "priceAmount": 45,
       "priceType": "from",
       "duration": "45–60 min",
-      "salonizedLink": "/afspraak"
+      "salonizedLink": ""
     },
     {
       "id": "lymfedrainage-cellulite-fibromassage",
@@ -46,7 +46,7 @@
       "priceAmount": 40,
       "priceType": "from",
       "duration": "45–60 min",
-      "salonizedLink": "/afspraak"
+      "salonizedLink": ""
     },
     {
       "id": "triggerpoints",
@@ -58,7 +58,7 @@
       "priceAmount": 45,
       "priceType": "from",
       "duration": "45–60 min",
-      "salonizedLink": "/afspraak"
+      "salonizedLink": ""
     },
     {
       "id": "zweedse-massage",
@@ -70,7 +70,7 @@
       "priceAmount": 70,
       "priceType": "from",
       "duration": "60 min",
-      "salonizedLink": "/afspraak"
+      "salonizedLink": ""
     },
     {
       "id": "hotstone-massage",
@@ -82,7 +82,7 @@
       "priceAmount": 95,
       "priceType": "fixed",
       "duration": "75 min",
-      "salonizedLink": "/afspraak"
+      "salonizedLink": ""
     },
     {
       "id": "balinese-swastha",
@@ -94,7 +94,7 @@
       "priceAmount": 80,
       "priceType": "fixed",
       "duration": "75 min",
-      "salonizedLink": "/afspraak"
+      "salonizedLink": ""
     }
   ]
 }

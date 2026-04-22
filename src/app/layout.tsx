@@ -3,8 +3,7 @@ import { fraunces, inter } from "@/lib/fonts";
 import { siteConfig } from "@/lib/site";
 import { Nav } from "@/components/Nav";
 import { Footer } from "@/components/Footer";
-import { BookingDialog } from "@/components/BookingDialog";
-import { getSettings } from "@/content/settings";
+import { CookieConsent } from "@/components/CookieConsent";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -62,7 +61,7 @@ export default function RootLayout({
         <Nav />
         <main id="main">{children}</main>
         <Footer />
-        <BookingDialog src={getSettings().salonizedOpenWidgetUrl} />
+        <CookieConsent />
       </body>
     </html>
   );

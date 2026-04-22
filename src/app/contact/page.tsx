@@ -12,6 +12,8 @@ import {
 } from "@/components/ui/Icons";
 import { getSettings } from "@/content/settings";
 import { siteConfig } from "@/lib/site";
+import { JsonLd } from "@/components/JsonLd";
+import { localBusinessSchema } from "@/lib/schema";
 import { ContactForm } from "./ContactForm";
 import { ContactMap } from "./ContactMap";
 
@@ -23,11 +25,13 @@ export const metadata: Metadata = {
 };
 
 export default function ContactPage() {
-  const { openingHours, socialLinks } = getSettings();
+  const settings = getSettings();
+  const { openingHours, socialLinks } = settings;
   const hasSocial = Boolean(socialLinks.instagram || socialLinks.facebook);
 
   return (
     <>
+      <JsonLd data={localBusinessSchema(settings)} />
       <Section>
         <Container>
           <div className="max-w-2xl">

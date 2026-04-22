@@ -1,9 +1,7 @@
-"use client";
+import type { ReactNode } from "react";
+import { getSettings } from "@/content/settings";
 
-import type { MouseEvent, ReactNode } from "react";
-import { openBooking } from "@/components/BookingDialog";
-
-type Variant = "primary" | "secondary" | "warm" | "floating" | "onDark";
+type Variant = "primary" | "secondary" | "warm" | "onDark";
 type Size = "md" | "lg";
 
 const base =
@@ -21,8 +19,6 @@ const variants: Record<Variant, string> = {
     "bg-transparent text-[var(--color-text-primary)] border border-[var(--color-border)] hover:border-[var(--color-accent-primary)] hover:text-[var(--color-accent-primary)]",
   warm:
     "bg-[var(--color-accent-warm)] text-white hover:bg-[var(--color-accent-warm-hover)]",
-  floating:
-    "bg-[var(--color-accent-primary)] text-white hover:bg-[var(--color-accent-primary-hover)] shadow-[0_6px_20px_rgba(219,124,38,0.28)] px-5 py-3 text-sm",
   onDark:
     "bg-white text-[var(--color-accent-primary)] hover:bg-[var(--color-bg)]",
 };
@@ -32,8 +28,11 @@ type Props = {
   size?: Size;
   className?: string;
   children: ReactNode;
-  tabIndex?: number;
-  onClick?: (event: MouseEvent<HTMLButtonElement>) => void;
+  /**
+   * Optional Salonized widget URL for a specific service. Falls back to the
+   * default widget URL from the CMS when empty.
+   */
+  href?: string;
 };
 
 export function BookingButton({
@@ -41,21 +40,19 @@ export function BookingButton({
   size = "md",
   className = "",
   children,
-  tabIndex,
-  onClick,
+  href,
 }: Props) {
-  const sizeClass = variant === "floating" ? "" : sizes[size];
+  const candidate = href?.trim();
+  const isAbsolute = candidate ? /^https?:\/\//.test(candidate) : false;
+  const target = isAbsolute ? candidate! : getSettings().salonizedOpenWidgetUrl;
   return (
-    <button
-      type="button"
-      tabIndex={tabIndex}
-      onClick={(event) => {
-        onClick?.(event);
-        if (!event.defaultPrevented) openBooking();
-      }}
-      className={`${base} ${sizeClass} ${variants[variant]} ${className}`}
+    <a
+      href={target}
+      target="_blank"
+      rel="noopener noreferrer"
+      className={`${base} ${sizes[size]} ${variants[variant]} ${className}`}
     >
       {children}
-    </button>
+    </a>
   );
 }

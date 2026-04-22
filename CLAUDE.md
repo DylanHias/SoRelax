@@ -4,12 +4,14 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Repository status
 
-Greenfield. No code yet — only two source-of-truth documents:
+Milestones M1–M3 are done (scaffold + design system, TinaCMS with 3 collections, Salonized + cookie consent + contact form backend). M4 (SEO/perf/a11y pass and Cloudflare Pages deploy) is next. See `README.md` for the current state per milestone.
 
-- `project-brief.md` — **authoritative spec**. Tech stack, page requirements, design system, CMS schema, SEO/perf budgets, build order. Read it before making architectural decisions.
-- `websitecontent.md` — raw content from the old site (Dutch). Source for migration into TinaCMS seeds and hardcoded pages per the brief's §7 content-migration table.
+Source-of-truth documents:
 
-When scaffolding, follow the build order in §12 of the brief.
+- `project-brief.md` — **authoritative spec**. Tech stack, page requirements, design system, CMS schema, SEO/perf budgets, build order. Read it before making architectural decisions. Where the brief and the shipped code disagree, the code wins — flag the delta and update the brief in the same change.
+- `websitecontent.md` — raw content from the old site (Dutch). Source for the TinaCMS seeds and the hardcoded pages per the brief's §7 content-migration table.
+
+When scaffolding net-new work, follow the build order in §12 of the brief.
 
 ## Non-obvious constraints that are easy to violate
 
@@ -19,7 +21,9 @@ When scaffolding, follow the build order in §12 of the brief.
 
 **Design direction is "therapist, not spa".** Palette, type, and imagery in §5 are deliberate. Do not introduce candles / stones / lotus / soft-focus massage stock; do not swap Fraunces+Inter for generic "wellness" fonts; no pill buttons; borders over shadows. Tokens (`#FAF7F2`, `#2F5D5A`, etc.) must be exposed as both Tailwind theme tokens **and** CSS custom properties.
 
-**Salonized must be deferred.** The third-party booking script tanks LCP if eager-loaded. Load the floating button only on first interaction or ~3s idle; load the inline widget on `/afspraak` via interaction/scroll. All Salonized scripts must be gated behind iubenda cookie consent — do not load them pre-consent.
+**Salonized is external-only.** All booking CTAs open Salonized in a new tab — no in-app iframe, modal, or embed script. This sidesteps the "Salonized tanks LCP" problem and means there's nothing third-party to gate on consent. If you're ever tempted to inline-embed the widget, don't — and if you must, defer load until interaction AND gate behind cookie consent.
+
+**Cookie consent is DIY, not iubenda.** A home-grown client-side banner in `CookieConsent.tsx` stores `{ necessary, analytics, marketing }` in localStorage under `sorelax-consent` (versioned) and emits `sorelax-consent-change` events. Use `useConsent()` before loading any future third-party script that sets cookies or reads device info. The privacy and cookie policy pages are hardcoded Dutch copy in `src/app/privacy/` and `src/app/cookies/` — have them lawyer-reviewed before launch. Do not reintroduce iubenda/Cookiebot/similar without a real reason.
 
 **TinaCMS owns exactly three collections.** `treatments`, `testimonials`, `settings` (schemas in §6). Don't add more fields or collections "for flexibility" — every field is a maintenance tax for a solo non-technical editor. Anything outside those three is hardcoded (see §7 migration table) even if it looks editable.
 
@@ -35,4 +39,4 @@ If content appears in `websitecontent.md` and the brief's §7 table marks it "Ha
 
 ## Open items blocking full completion
 
-Listed in §13 — real Salonized widget URLs, iubenda IDs, social handles, real photos, domain DNS, giftcard payment decision. Stub these with env vars / placeholders and flag in the README; do not invent values.
+Listed in §13 — real Salonized widget URLs, social handles, real photos, domain DNS, giftcard payment decision, lawyer review of the hardcoded privacy + cookie policies. Stub these with env vars / placeholders and flag in the README; do not invent values.

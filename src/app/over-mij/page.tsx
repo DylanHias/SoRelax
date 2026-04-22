@@ -6,6 +6,8 @@ import { PullQuote } from "@/components/ui/PullQuote";
 import { CredentialBadge } from "@/components/ui/CredentialBadge";
 import { CertificateIcon, HandsIcon, LeafIcon, ShieldCheckIcon } from "@/components/ui/Icons";
 import { CtaBand } from "@/components/sections/CtaBand";
+import { JsonLd } from "@/components/JsonLd";
+import { personSchema } from "@/lib/schema";
 
 export const metadata: Metadata = {
   title: "Over mij",
@@ -24,6 +26,7 @@ const credentials = [
 export default function OverMijPage() {
   return (
     <>
+      <JsonLd data={personSchema()} />
       <Section>
         <Container>
           <div className="grid gap-12 lg:grid-cols-[1.1fr_0.9fr] lg:items-center">
