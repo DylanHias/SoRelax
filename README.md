@@ -1,10 +1,51 @@
 # So'Relax — Massagetherapie Website
 
-Production marketing site for So'Relax, a solo massage therapy practice in
-Aarschot, Belgium. Built with Next.js 15 (static export), Tailwind CSS v4,
-TypeScript strict. See `project-brief.md` for the full spec and `CLAUDE.md`
-for the non-obvious constraints that keep this codebase aligned with the
-design direction.
+Marketing site for **So'Relax**, a solo massage-therapy practice run by Tanja
+in Aarschot, Belgium. The site's job is simple: explain the treatments, let
+visitors book a session (through Salonized, in a new tab), and be editable by
+a non-technical owner without a developer in the loop.
+
+It's not a spa booking platform, not a blog, not a storefront. Eight
+treatments on one page, a few supporting pages (about, contact, gift cards,
+terms), and a CMS that exposes exactly the fields Tanja needs to edit.
+
+## What this is, concretely
+
+- **A static Next.js 15 site** — `output: 'export'` → plain HTML/CSS/JS, no
+  server runtime, hosted on Cloudflare Pages' free tier. Deliberate: the
+  brief (§2) rejects SSR, edge runtimes, ISR, and route handlers.
+- **TinaCMS with three collections** — `treatments`, `testimonials`,
+  `settings`. Editing happens at `/admin` (Git-backed; changes commit to
+  `main` and trigger a Pages rebuild). Everything else is hardcoded Dutch
+  copy in components, migrated from the old site per brief §7.
+- **Dutch only (`nl-BE`)** — UI, slugs (`/over-mij`, `/behandelingen`,
+  `/afspraak`, `/cadeaubon`), CMS labels, error messages. The only English
+  phrase is the intentional hero tagline *"Your me-time starts with… me"*.
+- **"Therapist, not spa"** — warm neutrals (`#FAF7F2` / `#2F5D5A`), Fraunces
+  + Inter, borders over shadows, no candles/stones/lotus stock. The palette
+  and type are load-bearing brand decisions, not cosmetic defaults — see
+  `CLAUDE.md` for the full list of things not to do.
+- **Salonized is external-only** — every booking CTA opens Salonized in a
+  new tab. No iframe, no modal, no embed script on our origin. This is why
+  LCP is fast and why there's no third-party to gate behind cookie consent.
+- **Cookie consent is DIY** — a small client-side banner
+  (`CookieConsent.tsx`) stores `{ necessary, analytics, marketing }` in
+  `localStorage` under `sorelax-consent` and emits
+  `sorelax-consent-change` events. `useConsent()` is the hook any future
+  third-party script should gate on. No iubenda / Cookiebot.
+- **No contact form.** `/contact` lists address, phone, email, and opening
+  hours; inquiries go through Salonized booking or direct phone/email.
+  There is no form backend and no plan to add one.
+
+Source-of-truth documents:
+
+- `project-brief.md` — the authoritative spec (tech stack, page list, design
+  system, CMS schema, perf/a11y budgets, build order). Read it before making
+  architectural decisions.
+- `CLAUDE.md` — the non-obvious constraints that are easy to violate
+  accidentally (the list of "don't reintroduce X" items).
+- `websitecontent.md` — raw Dutch copy from the previous site, used to seed
+  the CMS and hardcoded pages.
 
 ## Getting started
 
@@ -17,13 +58,13 @@ pnpm typecheck
 pnpm lint
 ```
 
-Node 20+ required (see `.nvmrc`). Package manager pinned to `pnpm@10`.
+Node 20+ (see `.nvmrc`); package manager pinned to `pnpm@10`.
 
 - `pnpm dev:next` / `pnpm build:next` skip the Tina wrapper — useful when
   iterating on components without regenerating the admin bundle.
 - `pnpm build:cloud` builds the admin against Tina Cloud instead of the
   local filesystem — switch to this once `NEXT_PUBLIC_TINA_CLIENT_ID` and
-  `TINA_TOKEN` are provisioned (M4 deploy).
+  `TINA_TOKEN` are provisioned.
 
 ## Project layout
 
@@ -40,7 +81,7 @@ src/
   components/
     ui/                   # Button, Card, Container, Section, PullQuote, Accordion, Icons…
     sections/             # Home-page sections (Hero, Specializations, …)
-    Nav.tsx / Footer.tsx / FloatingBookingButton.tsx
+    Nav.tsx / Footer.tsx / FloatingBookingButton.tsx / CookieConsent.tsx
   content/                # Typed readers over the TinaCMS JSON files
     treatments.ts         # getTreatments, getTreatmentsByCategory
     testimonials.ts       # getTestimonials, getFeaturedTestimonials
@@ -48,12 +89,29 @@ src/
   lib/
     fonts.ts              # next/font self-hosted Fraunces + Inter
     site.ts               # siteConfig, nav structure
+    schema.ts             # JSON-LD builders (LocalBusiness, Person, Service)
     format.ts
+docs/
+  editor-handleiding.md   # Dutch editor guide for Tanja (login, price updates, hours)
 ```
 
-Design tokens live in **both** `src/app/globals.css` (as CSS custom properties
-under `:root`) **and** the Tailwind `@theme inline` block in the same file.
-Don't add a token to one without the other.
+Design tokens live in **both** `src/app/globals.css` (as CSS custom
+properties under `:root`) **and** the Tailwind `@theme inline` block in the
+same file. Don't add a token to one without the other.
+
+## TinaCMS collections
+
+Exactly three, per brief §6 — adding more is a maintenance tax for a solo
+non-technical editor.
+
+| Collection | File | Shape |
+| --- | --- | --- |
+| `treatments` | `content/treatments/treatments.json` | Ordered list of 8 services (therapeutic + relaxation). Drag-reorder in the editor. Each entry has an optional `salonizedLink` override. |
+| `testimonials` | `content/testimonials/testimonials.json` | Ordered list of reviews. `featured: true` = shown on the home carousel. |
+| `settings` | `content/settings/settings.json` | Single document: opening hours, Salonized widget URLs, Instagram / Facebook handles. |
+
+Field labels and help text in the admin UI are Dutch — Tanja is the editor.
+The Dutch editor guide is in `docs/editor-handleiding.md`.
 
 ## Environment
 
@@ -61,138 +119,55 @@ Copy `.env.example` → `.env.local` and fill in what you have. The site still
 builds with everything empty — CMS-backed fields fall back to env vars, which
 fall back to sane placeholders.
 
-| Variable | Needed for | Status |
-| --- | --- | --- |
-| `NEXT_PUBLIC_SITE_URL` | Absolute URLs in metadata, sitemap, OG tags | Always |
-| `NEXT_PUBLIC_TINA_CLIENT_ID`, `TINA_TOKEN` | `/admin` against Tina Cloud (prod) — not needed for local dev | Wired |
-| `NEXT_PUBLIC_SALONIZED_WIDGET_URL`, `NEXT_PUBLIC_SALONIZED_GIFTCARD_URL` | Fallback for booking widget + gift-card CTA when the CMS field is empty | CMS-owned |
-| `NEXT_PUBLIC_INSTAGRAM_URL`, `NEXT_PUBLIC_FACEBOOK_URL` | Fallback for footer social links when the CMS field is empty | CMS-owned |
+| Variable | Needed for |
+| --- | --- |
+| `NEXT_PUBLIC_SITE_URL` | Absolute URLs in metadata, sitemap, OG tags |
+| `NEXT_PUBLIC_TINA_CLIENT_ID`, `TINA_TOKEN` | `/admin` against Tina Cloud (prod) — not needed for local dev |
+| `NEXT_PUBLIC_SALONIZED_WIDGET_URL`, `NEXT_PUBLIC_SALONIZED_GIFTCARD_URL` | Fallback for booking widget + gift-card CTA when the CMS field is empty |
+| `NEXT_PUBLIC_INSTAGRAM_URL`, `NEXT_PUBLIC_FACEBOOK_URL` | Fallback for footer social links when the CMS field is empty |
 
-## Content
+## Status
 
-- **Dutch only** (`nl-BE`). Slugs are Dutch (`/over-mij`, `/behandelingen`, …).
-  The only English text is the intentional accent tagline `Your me-time
-  starts with... me` on the hero — do not translate or multiply it.
-- CMS content lives in `content/**/*.json` (three files) and is owned by
-  TinaCMS per `tina/config.ts`. Typed accessors in `src/content/*.ts`
-  import the JSON directly at build time; consumers stayed unchanged
-  from M1.
-- Hardcoded content (per brief §7) lives directly in components/pages and
-  was migrated from `websitecontent.md`. The old Cupping article is
-  intentionally discarded.
+Milestones M1–M4 are done. What shipped, briefly:
 
-### TinaCMS collections
+- **M1 — Scaffold + design system.** Next.js 15 / Tailwind v4 with
+  `output: 'export'`; palette, radii, Fraunces + Inter,
+  `prefers-reduced-motion`; UI primitives; all 9 routes with migrated
+  content; `sitemap.ts`, `robots.ts`, per-page `generateMetadata`.
+- **M2 — TinaCMS.** Three collections wired; content seeded from the old
+  site; typed JSON readers; `/admin` built into `public/admin/`; local
+  editing via `pnpm dev`, prod editing via Tina Cloud.
+- **M3 — Third-party integrations.** Salonized as external-link-only (no
+  embed); DIY cookie-consent banner with three categories; hardcoded Dutch
+  privacy + cookie policy pages; no contact form.
+- **M4 — SEO / perf / a11y / deploy.** JSON-LD on the key routes
+  (`LocalBusiness` + `HealthAndBeautyBusiness` on `/` and `/contact`,
+  `Person` on `/over-mij`, one `Service` per treatment on
+  `/behandelingen`); canonical URLs on every route; deploy docs for
+  Cloudflare Pages; Dutch editor handleiding for Tanja.
 
-Exactly three, per brief §6 — do not add more.
+### Before launch
 
-| Collection | File | Shape |
-| --- | --- | --- |
-| `treatments` | `content/treatments/treatments.json` | Ordered list of 8 services (therapeutic + relaxation). Drag-reorder in the editor. |
-| `testimonials` | `content/testimonials/testimonials.json` | Ordered list of reviews. `featured: true` = shown on the home carousel. |
-| `settings` | `content/settings/settings.json` | Opening hours, Salonized widget URLs, Instagram/Facebook. Single document. |
-
-Field labels and help text in the admin UI are Dutch — Tanja is the editor.
-
-## What's done
-
-**M1 — Scaffold + design system.**
-- Next.js 15 + Tailwind v4 with `output: 'export'`
-- Design system (palette, radii, Fraunces + Inter, reduced-motion support)
-- Core UI primitives and home-page sections
-- All routes rendered with migrated content
-- `sitemap.ts`, `robots.ts`, per-page `generateMetadata`
-- Contact form UI (no backend yet — submits to an in-memory stub)
-- Static map with explicit "load interactive map" opt-in
-
-**M2 — TinaCMS.**
-- `tina/config.ts` with the 3 collections, Dutch field labels + help text
-- Content seeded into `content/**/*.json` (migrated from the M1 TS placeholders)
-- `src/content/*.ts` rewritten as typed readers over the JSON files —
-  consumer code unchanged
-- `/admin` generated by `tinacms build` into `public/admin/` at build time
-- Local editing via `pnpm dev` (Tina's local GraphQL server, no Cloud auth
-  required); production editing against Tina Cloud once
-  `NEXT_PUBLIC_TINA_CLIENT_ID` + `TINA_TOKEN` are set
-
-**M3 — Third-party integrations.**
-- **Salonized, external-only.** All booking CTAs open the Salonized widget
-  in a new tab — no in-app iframe or modal. `BookingButton` resolves the
-  per-service `salonizedLink` from the CMS when provided, otherwise the
-  default `salonizedOpenWidgetUrl` from settings. `/afspraak` is an info +
-  redirect page (address, hours, cancellation policy, "Open online agenda"
-  CTA). No Salonized script runs on our origin, so nothing to defer or
-  gate.
-- **Cookie consent (DIY).** `CookieConsent` renders a client-side banner
-  with three categories (Noodzakelijk / Analyse / Marketing) and stores
-  the choice in `localStorage` under `sorelax-consent` (versioned). A
-  `useConsent()` hook and a `sorelax-consent-change` event are available
-  for any future third-party script that needs gating. `openCookiePreferences()`
-  re-opens the banner from anywhere — wired to the "Cookie-instellingen"
-  button on `/cookies`. No third-party consent vendor is used.
-- **Privacy + cookie policies.** Hardcoded Dutch copy in `src/app/privacy/`
-  and `src/app/cookies/` (per brief §7 — legal pages are hardcoded). The
-  baseline text is a starting draft; have it reviewed by a Belgian
-  lawyer before launch.
-- **No contact form.** `/contact` surfaces address, phone, email, opening
-  hours, and a direct Salonized booking CTA. All bookings and inquiries
-  go through Salonized — no form backend, no Resend, no Worker.
-
-**M4 — SEO, performance, deploy.**
-- **JSON-LD** structured data on the key routes: `LocalBusiness`
-  (+`HealthAndBeautyBusiness`) on `/` and `/contact`, `Person` on
-  `/over-mij`, one `Service` per treatment on `/behandelingen`.
-  Schemas live in `src/lib/schema.ts`; pages render them via the
-  `<JsonLd>` helper. `openingHoursSpecification` is derived from the CMS
-  settings and skips free-text rows like "Op afspraak".
-- **Canonical URLs** via `alternates.canonical` on every route, including
-  home.
-- **Deploy docs** for Cloudflare Pages + custom domain + Tina → Pages
-  build webhook (see [Deploy](#deploy) below).
-- **Editor guide for Tanja** in `docs/editor-handleiding.md` — Dutch, two
-  pages, covers login, price updates, testimonials, opening hours.
-
-## What's next
-
-- **Pre-launch audits.** Run Lighthouse mobile (real 4G throttling) and
-  axe against brief §8 budgets (Perf ≥ 95, A11y ≥ 95, BP ≥ 95, SEO = 100,
-  LCP < 2.0s, CLS < 0.05, INP < 150ms). These are acceptance criteria,
-  not aspirations — do not declare launch-ready without them.
-- **Legal review** of `/privacy` and `/cookies` by a Belgian lawyer.
-- **Blocking items** — see the list below; most need client input.
-
-## Open items blocking full completion (brief §13)
-
-Flagged as placeholders or stubs in the current code — needs client input:
-
-- **Photography.** Hero and about-page imagery are currently abstract
-  gradient placeholders (per brief §5: warm, abstract, *not* massage stock).
-  Replace with real photos of Tanja and the salon interior.
-- **Salonized widget URLs.** Main booking widget, gift-card checkout, and
-  per-service custom widgets. Owned by TinaCMS (`settings.json` + per-card
-  `salonizedLink` on `treatments.json`). Env vars act as fallback until the
-  CMS fields are filled in `/admin`.
-- **Legal review.** `/privacy` and `/cookies` contain a reasonable
-  baseline draft based on what the site actually does (Salonized redirect,
-  Cloudflare Web Analytics, TinaCMS). Have a Belgian lawyer verify the
-  copy, the bewaartermijnen, and the listed verwerkers before launch.
-  Update the `LAST_UPDATED` constant at the top of each page when the
-  text changes.
-- **Social handles.** Instagram and Facebook URLs (optional).
-- **Opening hours.** Currently seeded Mon–Fri 09:00–18:00, Sat on request,
-  Sun closed — confirm with Tanja.
-- **Gift-card payment flow.** If Tanja doesn't configure Mollie/Stripe
-  inside Salonized, `/cadeaubon` falls back to a contact CTA — already
-  handled by the current code (env-var switch).
-- **Domain.** `sorelaxmassage.be` registered and DNS pointing to Cloudflare
-  Pages.
-- **`sorelaxmassage.be` favicon and OG image.** `public/favicon.ico` is the
-  Next.js default; replace with a real favicon set + 1200×630 OG image.
+- **Lighthouse mobile** (real 4G throttling) and axe against brief §8
+  budgets: Perf ≥ 95, A11y ≥ 95, BP ≥ 95, SEO = 100, LCP < 2.0s,
+  CLS < 0.05, INP < 150ms. Acceptance criteria, not aspirations.
+- **Legal review** of `/privacy` and `/cookies` by a Belgian lawyer. The
+  baseline draft in the repo reflects what the site actually does
+  (Salonized redirect, Cloudflare Web Analytics, TinaCMS), but a lawyer
+  should verify the bewaartermijnen and the list of verwerkers. Bump the
+  `LAST_UPDATED` constant on each page when the text changes.
+- **Client-owned stubs** (brief §13) — real photography (hero + about are
+  currently abstract gradients, deliberately *not* massage stock),
+  Salonized widget URLs, social handles, opening-hours confirmation,
+  gift-card payment decision (Mollie/Stripe in Salonized or a contact
+  fallback — the code already handles both), domain DNS, favicon set, and
+  a 1200×630 OG image.
 
 ## Deploy
 
 Target: **Cloudflare Pages** on the free tier (static hosting, EU edge).
 `output: 'export'` means the built site is just HTML/CSS/JS — Pages serves
-it directly without any Pages Functions or Workers runtime.
+it directly without Pages Functions or Workers runtime.
 
 ### One-time setup
 
@@ -203,7 +178,8 @@ it directly without any Pages Functions or Workers runtime.
    - Cloudflare dashboard → Workers & Pages → Create → Pages → Connect to
      Git → select the repo.
    - **Framework preset:** Next.js (Static HTML Export).
-   - **Build command:** `pnpm build`
+   - **Build command:** `pnpm build` (switch to `pnpm build:cloud` once
+     `TINA_TOKEN` is set).
    - **Build output directory:** `out`
    - **Root directory:** leave blank.
    - **Node version:** `NODE_VERSION=20` as a build env variable.
@@ -213,24 +189,21 @@ it directly without any Pages Functions or Workers runtime.
    - `NEXT_PUBLIC_SITE_URL=https://sorelaxmassage.be`
    - `NEXT_PUBLIC_TINA_CLIENT_ID=…`
    - `TINA_TOKEN=…` (**encrypted**)
-   - Optional fallbacks (leave empty if the CMS already owns them):
+   - Optional fallbacks (leave empty if the CMS owns them):
      `NEXT_PUBLIC_SALONIZED_WIDGET_URL`,
      `NEXT_PUBLIC_SALONIZED_GIFTCARD_URL`,
      `NEXT_PUBLIC_INSTAGRAM_URL`, `NEXT_PUBLIC_FACEBOOK_URL`.
-   Switch the build script to `pnpm build:cloud` once `TINA_TOKEN` is set
-   so `/admin` authenticates against Tina Cloud instead of the local
-   filesystem.
 4. **Custom domain.** Pages → Custom domains → add `sorelaxmassage.be`
    and `www.sorelaxmassage.be`. Cloudflare issues the TLS cert
    automatically when DNS points at Pages (CNAME flattening on the root
-   if the domain is on Cloudflare DNS). Set up a redirect rule
+   if the domain is on Cloudflare DNS). Add a redirect rule
    `www → apex` (or vice versa — pick one canonical host).
-5. **Enable Cloudflare Web Analytics** (Pages → Analytics →
-   Web Analytics). It's cookieless so it does not require consent.
+5. **Enable Cloudflare Web Analytics** (Pages → Analytics → Web
+   Analytics). It's cookieless so it does not require consent.
 
 ### Content-change rebuild webhook
 
-Tanja edits content in Tina Cloud → Tina commits to `main` → Pages rebuilds.
+Tanja edits in Tina Cloud → Tina commits to `main` → Pages rebuilds.
 
 1. Cloudflare Pages → project → Settings → Builds & deployments →
    **Deploy hooks** → create a hook named `tina-content-change` on
@@ -251,9 +224,12 @@ Tanja edits content in Tina Cloud → Tina commits to `main` → Pages rebuilds.
 
 ## Conventions
 
-- **Dutch throughout** — field labels, form errors, slugs, `<html lang="nl-BE">`.
-- **No pill buttons**, 8 px / 16 px / 24 px radius scale, borders over shadows.
-- **Performance**: `next/font` self-hosts Fraunces + Inter; no client-side
-  JS frameworks beyond React; `output: 'export'` → plain static files.
-- **Accessibility**: every page has a skip link, nav is keyboard-reachable,
-  `prefers-reduced-motion` is respected via `globals.css`.
+- **Dutch throughout** — field labels, slugs, error copy,
+  `<html lang="nl-BE">`.
+- **No pill buttons**, 8 / 16 / 24 px radius scale, borders over shadows.
+- **Performance** — `next/font` self-hosts Fraunces + Inter; no client JS
+  frameworks beyond React; `output: 'export'` → plain static files; JS
+  budget < 100 KB on home excluding deferred Salonized.
+- **Accessibility** — every page has a skip link, nav is keyboard-reachable,
+  `prefers-reduced-motion` is respected via `globals.css`, WCAG 2.1 AA is
+  an acceptance criterion.
