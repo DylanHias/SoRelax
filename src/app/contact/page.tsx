@@ -45,7 +45,7 @@ export default function ContactPage() {
             </p>
           </div>
 
-          <div className="mt-12 grid gap-10 lg:grid-cols-[1fr_1fr]">
+          <div className="mt-12 grid items-start gap-10 lg:grid-cols-[1fr_1fr]">
             <div className="space-y-6">
               <Card className="flex items-start gap-4">
                 <span
@@ -173,19 +173,17 @@ export default function ContactPage() {
               )}
             </div>
 
-            <div>
-              <Card className="flex h-full flex-col justify-between gap-8">
-                <div>
-                  <p className="text-xs uppercase tracking-[0.16em] text-[var(--color-accent-primary)] font-medium">
-                    Direct een afspraak
-                  </p>
-                  <h2 className="mt-3 text-[1.5rem]">Plan meteen online</h2>
-                  <p className="mt-4 text-[var(--color-text-secondary)]">
-                    Boek je behandeling rechtstreeks in de online agenda.
-                    Kies je moment — je krijgt meteen een bevestiging.
-                  </p>
-                </div>
-                <div>
+            <div className="lg:sticky lg:top-24">
+              <Card>
+                <p className="text-xs uppercase tracking-[0.16em] text-[var(--color-accent-primary)] font-medium">
+                  Direct een afspraak
+                </p>
+                <h2 className="mt-3 text-[1.5rem]">Plan meteen online</h2>
+                <p className="mt-4 text-[var(--color-text-secondary)]">
+                  Boek je behandeling rechtstreeks in de online agenda.
+                  Kies je moment — je krijgt meteen een bevestiging.
+                </p>
+                <div className="mt-8">
                   <BookingButton variant="primary" size="lg">
                     Boek online via Salonized
                   </BookingButton>
