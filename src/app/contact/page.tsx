@@ -14,7 +14,6 @@ import { getSettings } from "@/content/settings";
 import { siteConfig } from "@/lib/site";
 import { JsonLd } from "@/components/JsonLd";
 import { localBusinessSchema } from "@/lib/schema";
-import { BookingButton } from "@/components/BookingButton";
 import { ContactMap } from "./ContactMap";
 
 export const metadata: Metadata = {
@@ -120,6 +119,9 @@ export default function ContactPage() {
                 </div>
               </Card>
 
+            </div>
+
+            <div className="space-y-6">
               <Card>
                 <p className="text-xs uppercase tracking-[0.16em] text-[var(--color-text-secondary)] font-medium">
                   Openingsuren
@@ -171,40 +173,6 @@ export default function ContactPage() {
                   </div>
                 </Card>
               )}
-            </div>
-
-            <div className="lg:sticky lg:top-24">
-              <Card>
-                <p className="text-xs uppercase tracking-[0.16em] text-[var(--color-accent-primary)] font-medium">
-                  Direct een afspraak
-                </p>
-                <h2 className="mt-3 text-[1.5rem]">Plan meteen online</h2>
-                <p className="mt-4 text-[var(--color-text-secondary)]">
-                  Boek je behandeling rechtstreeks in de online agenda.
-                  Kies je moment — je krijgt meteen een bevestiging.
-                </p>
-                <div className="mt-8">
-                  <BookingButton variant="primary" size="lg">
-                    Boek online via Salonized
-                  </BookingButton>
-                  <p className="mt-5 text-sm text-[var(--color-text-secondary)]">
-                    Liever even overleggen?{" "}
-                    <a
-                      href={`tel:${siteConfig.contact.phoneTel}`}
-                      className="text-[var(--color-accent-primary)] no-underline"
-                    >
-                      Bel {siteConfig.contact.phone}
-                    </a>
-                    {" "}of mail naar{" "}
-                    <a
-                      href={`mailto:${siteConfig.contact.email}`}
-                      className="text-[var(--color-accent-primary)] no-underline"
-                    >
-                      {siteConfig.contact.email}
-                    </a>.
-                  </p>
-                </div>
-              </Card>
             </div>
           </div>
         </Container>
