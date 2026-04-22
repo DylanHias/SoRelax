@@ -18,9 +18,9 @@ import { ContactForm } from "./ContactForm";
 import { ContactMap } from "./ContactMap";
 
 export const metadata: Metadata = {
-  title: "Contact",
+  title: "Contact — massage Aarschot",
   description:
-    "Contacteer So'Relax massagetherapie in Aarschot. Adres, telefoon, e-mail, openingsuren en route.",
+    "Contacteer So'Relax massagetherapie in Aarschot: adres (Rillaarse Baan 398), telefoon, e-mail, openingsuren en route. Erkend massagetherapeut en pijncoach in Vlaams-Brabant.",
   alternates: { canonical: "/contact" },
 };
 

@@ -10,9 +10,9 @@ import { JsonLd } from "@/components/JsonLd";
 import { personSchema } from "@/lib/schema";
 
 export const metadata: Metadata = {
-  title: "Over mij",
+  title: "Over Tanja — massagetherapeut & pijncoach",
   description:
-    "Maak kennis met Tanja — erkend massagetherapeut bij BMF en gecertificeerd pijncoach in Aarschot. Haar aanpak, ervaring en specialisatie.",
+    "Maak kennis met Tanja, erkend massagetherapeut bij BMF en gecertificeerd pijncoach in Aarschot (Vlaams-Brabant). Aanpak, ervaring en specialisatie in chronische pijn en fibromyalgie.",
   alternates: { canonical: "/over-mij" },
 };
 

@@ -7,9 +7,9 @@ import { getSettings } from "@/content/settings";
 import { siteConfig } from "@/lib/site";
 
 export const metadata: Metadata = {
-  title: "Afspraak maken",
+  title: "Afspraak maken — massage Aarschot",
   description:
-    "Boek online een afspraak bij So'Relax massagetherapie in Aarschot. Kies je behandeling en tijdstip via onze online agenda.",
+    "Boek online een afspraak bij So'Relax massagetherapie in Aarschot. Kies je behandeling en tijdstip via de online agenda. Openingsuren, adres en annuleringsvoorwaarden.",
   alternates: { canonical: "/afspraak" },
 };
 

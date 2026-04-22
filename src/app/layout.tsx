@@ -6,14 +6,28 @@ import { Footer } from "@/components/Footer";
 import { CookieConsent } from "@/components/CookieConsent";
 import "./globals.css";
 
+const siteDescription =
+  "Massagetherapie en pijncoaching in Aarschot (Vlaams-Brabant). Erkend therapeut bij BMF — rug- en nekmassage, deep tissue, fibromyalgie, voetreflexologie.";
+
 export const metadata: Metadata = {
   metadataBase: new URL(siteConfig.url),
   title: {
-    default: `${siteConfig.name} — ${siteConfig.tagline}`,
+    default: `${siteConfig.name} — Massagetherapie Aarschot`,
     template: `%s | ${siteConfig.name}`,
   },
-  description:
-    "Erkend massagetherapeut en gecertificeerd pijncoach in Aarschot. Therapeutische massages voor rug-, nek- en schouderklachten, fibromyalgie en meer.",
+  description: siteDescription,
+  keywords: [
+    "massage Aarschot",
+    "massagetherapie Aarschot",
+    "pijncoach Vlaams-Brabant",
+    "fibromyalgie massage",
+    "deep tissue massage Aarschot",
+    "rug- en nekmassage",
+    "voetreflexologie Aarschot",
+    "lymfedrainage",
+    "hotstone massage",
+    "erkend massagetherapeut",
+  ],
   applicationName: siteConfig.name,
   authors: [{ name: "Tanja" }],
   openGraph: {
@@ -21,17 +35,18 @@ export const metadata: Metadata = {
     locale: "nl_BE",
     url: siteConfig.url,
     siteName: siteConfig.name,
-    title: `${siteConfig.name} — ${siteConfig.tagline}`,
-    description: "Massagetherapie en pijncoaching in Aarschot.",
+    title: `${siteConfig.name} — Massagetherapie & pijncoach in Aarschot`,
+    description: siteDescription,
   },
   twitter: {
     card: "summary_large_image",
-    title: siteConfig.name,
-    description: siteConfig.tagline,
+    title: `${siteConfig.name} — Massage Aarschot`,
+    description: siteDescription,
   },
   robots: {
     index: true,
     follow: true,
+    googleBot: { index: true, follow: true, "max-image-preview": "large" },
   },
   icons: {
     icon: "/favicon.ico",

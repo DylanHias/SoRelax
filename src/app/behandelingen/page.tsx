@@ -11,9 +11,9 @@ import { serviceSchema } from "@/lib/schema";
 import { formatPrice } from "@/lib/format";
 
 export const metadata: Metadata = {
-  title: "Behandelingen",
+  title: "Behandelingen & prijzen — massage Aarschot",
   description:
-    "Therapeutische en ontspanningsmassages in Aarschot: rug- en nekmassage, voetreflexologie, deep tissue, cupping, lymfedrainage, hotstone, Zweeds, Balinees.",
+    "Therapeutische en ontspanningsmassages in Aarschot: rug- en nekmassage, deep tissue, voetreflexologie, cupping, lymfedrainage, hotstone, Zweedse en Balinese massage. Prijzen en duur per behandeling.",
   alternates: { canonical: "/behandelingen" },
 };
 

@@ -7,9 +7,9 @@ import { getSettings } from "@/content/settings";
 import { siteConfig } from "@/lib/site";
 
 export const metadata: Metadata = {
-  title: "Cadeaubon",
+  title: "Cadeaubon massage Aarschot",
   description:
-    "Verras iemand met een cadeaubon van So'Relax. Twee jaar geldig, inwisselbaar voor elke behandeling naar keuze.",
+    "Verras iemand met een cadeaubon voor een massage bij So'Relax in Aarschot. Twee jaar geldig, inwisselbaar voor elke therapeutische of ontspanningsmassage uit het aanbod.",
   alternates: { canonical: "/cadeaubon" },
 };
 
