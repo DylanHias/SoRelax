@@ -22,7 +22,7 @@
       "name": "Voetreflexologie",
       "category": "therapeutic",
       "shortDescription": "Drukpuntmassage op de voeten die inwerkt op reflexzones van het hele lichaam.",
-      "longDescription": "Via gerichte druk op specifieke reflexzones in de voeten wordt het zelfgenezend vermogen van het lichaam gestimuleerd. Bijzonder effectief bij spanning, slaapproblemen, spijsverterings- of hormonale klachten.",
+      "longDescription": "Reflexzone- of voetreflexzone-therapie is een alternatieve behandelmethode die wordt toegepast bij pijnklachten. Voetreflextherapie is gericht op het stimuleren van het zelfhelend vermogen van de mens. Door de voetreflexzones volgens een speciale techniek te masseren, wordt de doorbloeding van het lichaam bevorderd. Hierdoor kunnen zuurstof en voeding de weefsels bereiken en worden afvalstoffen sneller afgevoerd. Blokkades in de energiedoorstroming kunnen door deze massage worden opgeheven. Een behandeling duurt ongeveer een uur. Het wordt toegepast bij onder andere bij stress, vermoeidheid, slaapstoornissen, hoofdpijn, rugpijn, gewrichtsklachten, maag- en darmklachten, huidproblemen, ademhalingsklachten en bij vocht vasthouden.",
       "indications": [
         "Stress",
         "Slaapproblemen",
@@ -31,8 +31,8 @@
       ],
       "priceAmount": 70,
       "priceType": "fixed",
-      "duration": "60 min",
-      "salonizedLink": ""
+      "duration": "45",
+      "salonizedLink": "https://sorelax.salonized.com/widget_bookings/new"
     },
     {
       "id": "deep-tissue-cupping",
