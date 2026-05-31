@@ -120,11 +120,11 @@
       "salonizedLink": ""
     },
     {
-      "id": "balinese-swastha",
-      "name": "Balinese of Swastha massage",
+      "id": "balinese",
+      "name": "Balinese massage",
       "category": "relaxation",
       "shortDescription": "Een rijke, krachtige massage met warme olie die oosterse technieken en acupressuur combineert.",
-      "longDescription": "De Balinese massage combineert zachte strijkingen, acupressuur, reflexologie en aromatherapie met warme natuurlijke oliën. Brengt het lichaam in balans en activeert de eigen energiestroom.",
+      "longDescription": "De Balinese massage is een gehele lichaamsmassage van de voeten tot aan de hoofdhuid, waarbij zacht ontspannende strijkingen worden afgewisseld met krachtige spiergrepen en drukpuntstimulaties. Langzame en snelle, diepe en ondiepe massagetechnieken wisselen elkaar in rustig tempo af. De Balinese massage heeft dan ook een therapeutisch effect. Balinese massage is een oude vorm van Indonesische massage, geïnspireerd op Chinese acupressuur en Ayurveda. Ze biedt rust en ontspanning aan het hele lichaam door het combineren van verschillende technieken en het gebruik van etherische oliën. Hier wordt ook de nervus vagus geactiveerd waardoor uw lichaam terug in balans komt tijdens stress of traumaverwerking. De nervus vagus speelt een cruciale rol in het autonome zenuwstelsel, met name het parasympathische systeem, dat verantwoordelijk is voor rust en herstel.",
       "indications": [
         "Energietekort",
         "Spanning in het hele lichaam",
@@ -134,7 +134,7 @@
       "priceAmount": 80,
       "priceType": "fixed",
       "duration": "75 min",
-      "salonizedLink": ""
+      "salonizedLink": "https://sorelax.salonized.com/widget_bookings/new"
     }
   ]
 }
