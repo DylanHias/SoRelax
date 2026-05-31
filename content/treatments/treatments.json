@@ -69,21 +69,21 @@
       "salonizedLink": ""
     },
     {
-      "id": "triggerpoints",
-      "name": "Triggerpoint­behandeling",
+      "id": "triggerpoints od deep tissue",
+      "name": "Triggerpoint­behandeling of Deep Tissue",
       "category": "therapeutic",
       "shortDescription": "Gerichte druk op pijnpunten om uitstralingspijn en bewegingsbeperking te verlichten.",
-      "longDescription": "Triggerpoints zijn overprikkelde punten in spieren die pijn kunnen uitstralen naar andere zones van het lichaam. Door precieze druk worden ze gedeactiveerd, waardoor hoofdpijn, schouderklachten of heupklachten kunnen verdwijnen.",
+      "longDescription": "Triggerpoints zijn overprikkelde punten in spieren die pijn kunnen uitstralen naar andere zones van het lichaam. Door precieze druk worden ze gedeactiveerd, waardoor hoofdpijn, schouderklachten of heupklachten kunnen verdwijnen.\nEen deep tissue massage is een diepgaande massage die zich richt op het bindweefsel rondom je spieren. Het bindweefsel in je lichaam is altijd in verandering. Door bijvoorbeeld een lange tijd in een verkeerde houding te zitten, kan je bindweefsel zich daarnaar vormen.",
       "indications": [
         "Uitstralingspijn",
-        "Migraine / hoofdpijn",
+        "Migraine / Hoofdpijn",
         "Chronische spierknopen",
         "Sportblessures"
       ],
       "priceAmount": 45,
-      "priceType": "from",
-      "duration": "45–60 min",
-      "salonizedLink": ""
+      "priceType": "fixed",
+      "duration": "30 min.",
+      "salonizedLink": "https://sorelax.salonized.com/widget_bookings/new"
     },
     {
       "id": "zweedse-massage",
