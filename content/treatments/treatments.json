@@ -107,7 +107,7 @@
       "name": "Hotstone massage",
       "category": "relaxation",
       "shortDescription": "Warme basaltstenen dringen diep in de spieren en brengen lichaam en geest tot volledige rust.",
-      "longDescription": "Gladde, verwarmde basaltstenen worden op specifieke punten gelegd en gebruikt tijdens de massage. De diepe warmte ontspant de spieren sneller en dieper dan handen alleen kunnen, ideaal bij koude voeten, vermoeidheid of chronische spanning.",
+      "longDescription": "De hotstone massage is een volledige lichaamsmassage, waarbij we gebruikmaken van warme stenen. Het doel is om te zorgen voor een volledige ontspanning van het lichaam. Het geeft onder meer een diep ontspannend effect op het zenuwstelsel, dat dagelijks door vele stressoren uit balans raakt. Ook helpen de warmte en de massagetechnieken om stijve spieren los te maken. Daarom is de hotstone massage een ideale massagebehandeling bij spierpijn. De hotstone massage stimuleert eveneens de bloedsomloop en de werking van de organen. Daardoor worden afvalstoffen gemakkelijker uit het lichaam weggevoerd.",
       "indications": [
         "Diepe ontspanning",
         "Slechte doorbloeding",
@@ -117,7 +117,7 @@
       "priceAmount": 95,
       "priceType": "fixed",
       "duration": "75 min",
-      "salonizedLink": ""
+      "salonizedLink": "https://sorelax.salonized.com/widget_bookings/new"
     },
     {
       "id": "balinese",
