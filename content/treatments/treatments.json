@@ -90,7 +90,7 @@
       "name": "Zweedse massage",
       "category": "relaxation",
       "shortDescription": "Klassieke ontspanningsmassage met vloeiende, lange bewegingen voor diepe rust.",
-      "longDescription": "De meest bekende vorm van ontspanningsmassage. Lange strijkingen, kneedbewegingen en lichte druk zorgen voor diepe ontspanning, betere doorbloeding en een gevoel van algeheel welzijn.",
+      "longDescription": "De meest bekende vorm van ontspanningsmassage. Lange strijkingen, kneedbewegingen en lichte druk zorgen voor diepe ontspanning, betere doorbloeding en een gevoel van algeheel welzijn. Een ontspanningsmassage heeft als doel dat het ontspannend is, gewoon puur genieten. Naast dat een ontspanningsmassage een ontspannen gevoel geeft brengt het ook lichaam en geest in balans. Laad jezelf op en zorg dat de stress van je afglijd.",
       "indications": [
         "Stress",
         "Algemene spanning",
@@ -99,8 +99,8 @@
       ],
       "priceAmount": 70,
       "priceType": "from",
-      "duration": "60 min",
-      "salonizedLink": ""
+      "duration": "60 - 90 min.",
+      "salonizedLink": "https://sorelax.salonized.com/widget_bookings/new"
     },
     {
       "id": "hotstone-massage",
