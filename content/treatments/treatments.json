@@ -35,21 +35,21 @@
       "salonizedLink": "https://sorelax.salonized.com/widget_bookings/new"
     },
     {
-      "id": "deep-tissue-cupping",
-      "name": "Deep tissue of cupping",
+      "id": "cupping",
+      "name": "Cupping",
       "category": "therapeutic",
       "shortDescription": "Diepe weefselmassage of droge cupping om vastzittende spieren en bindweefsel los te maken.",
-      "longDescription": "Bij So'Relax werken we uitsluitend met droge cupping. De vacuümcups tillen de oppervlakkige spierlagen op, stimuleren doorbloeding en maken fasciale verklevingen los. Effectief bij chronische rug-, nek- en schouderpijn.",
+      "longDescription": "Bij cupping worden cups omgekeerd vacuüm gezogen op de huid. De huid wordt hierdoor iets omhoog getrokken en er wordt bloed naar deze plek geleid. Zo zorgt cupping er op de eerste plaats voor dat de doorbloeding in de huid en de spieren gestimuleerd wordt. Daarbij worden voedingsstoffen beter aangevoerd en afvalstoffen worden effectiever weggeleid uit het lichaam. Dit leidt tot het losmaken van spanningen, het verhelpen van bindweefselverklevingen en al met al dus tot complete ontspanning. De plekken zijn een normaal verschijnsel en trekken na enkele dagen vanzelf weg. Ook de eventuele symptomen zullen dan zijn verbeterd. Het vacuüm zuigen van de cups hoort geen pijn te doen. Sterker nog, een massage met druk zal meestal onprettiger aanvoelen dan de cups. In tegenstelling tot de druk met de handen bij een massage zorgen de cups voor een negatieve druk, waardoor ze juist nog sneller pijn kunnen verlichten. De spanning wordt hiermee zeg maar uit het lichaam getrokken. Bij So'Relax werk ik met glijdende cups zodat de behandeling zachter en aangenaam blijft in combinatie met handenwerk zodat u ten volle kan genieten.",
       "indications": [
         "Chronische spierpijn",
         "Fasciale verklevingen",
-        "Sportblessures",
+        "Spieren stimuleren ",
         "Doorbloedingsproblemen"
       ],
-      "priceAmount": 45,
-      "priceType": "from",
-      "duration": "45–60 min",
-      "salonizedLink": ""
+      "priceAmount": 65,
+      "priceType": "fixed",
+      "duration": "45 min.",
+      "salonizedLink": "https://sorelax.salonized.com/widget_bookings/new"
     },
     {
       "id": "lymfedrainage-cellulite-fibromassage",
