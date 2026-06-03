@@ -52,21 +52,21 @@
       "salonizedLink": "https://sorelax.salonized.com/widget_bookings/new"
     },
     {
-      "id": "lymfedrainage-cellulite-fibromassage",
-      "name": "Lymfedrainage, cellulite­behandeling of fibromassage",
+      "id": "lymfedrainage-cellulite",
+      "name": "Lymfedrainage en/of cellulite­behandeling",
       "category": "therapeutic",
       "shortDescription": "Zachte, stuwende massagetechnieken die de lymfestroom activeren en vochtophopingen helpen afvoeren.",
-      "longDescription": "Manuele lymfedrainage stimuleert de afvoer van afvalstoffen en vocht. Fibromassage is een zachtere, ritmische variant, bijzonder geschikt voor mensen met fibromyalgie die geen diepe druk verdragen.",
+      "longDescription": "Lymfedrainage is een manuele massage waarbij zachte druk wordt toegepast op specifieke punten. Dit helpt om de afvoer van afvalstoffen en overtollig vocht via de lymfevaten te verbeteren. Bij het gelaat zorgt deze techniek voor een mooie egale huid en een gezonde glow. Drainage van benen zorgt voor verlichting. \nResultaten zijn reeds zichtbaar na 24 uur.\nDeze massagetechniek voor cellulitebehandeling komt uit een eeuwenoude wijsheid samengesmolten met de klassieke massagetechnieken. Deze techniek maakt gebruik van stevigere massagetechnieken alsook van een houten massageroller. Deze behandeling dient herhaald te worden om een mooi resultaat te bekomen. \n",
       "indications": [
-        "Fibromyalgie",
+        "Gezonde glow",
         "Oedeem",
         "Cellulitis",
         "Herstel na operatie"
       ],
       "priceAmount": 40,
       "priceType": "from",
-      "duration": "45–60 min",
-      "salonizedLink": ""
+      "duration": "30min",
+      "salonizedLink": "https://sorelax.salonized.com/widget_bookings/new"
     },
     {
       "id": "triggerpoints od deep tissue",
