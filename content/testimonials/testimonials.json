@@ -35,6 +35,12 @@
       "clientName": "Roger",
       "body": "Goede behandeling voor mijn rugprobleem, zeer tevreden. Dankjewel!",
       "featured": false
+    },
+    {
+      "id": "saskia",
+      "clientName": "Saskia",
+      "body": "Super zalige, relaxerende massage gegeven door een topvrouw die weet wat ze doet.\nZeer blij dat ik jou gevonden heb",
+      "featured": true
     }
   ]
 }
