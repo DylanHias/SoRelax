@@ -135,6 +135,23 @@
       "priceType": "fixed",
       "duration": "75 min",
       "salonizedLink": "https://sorelax.salonized.com/widget_bookings/new"
+    },
+    {
+      "id": "fibromyssage",
+      "name": "Fibromyssage",
+      "category": "therapeutic",
+      "shortDescription": "De fibromyssage is een massage die op een rustige manier wordt gegeven zonder teveel druk uit te oefenen op de spieren. ",
+      "longDescription": "Fibromyalgie is één van de meest voorkomende chronische pijnsyndromen en betekent letterlijk bindweefelspierpijn. Vaak wordt Fribromyalgie in verband gebracht met het CVS chronische vermoeidheidssyndroomen met ME, myaligische encefalomyetis, wat zoveel wil zeggen als pijnlijke spieren in combinatie met verspreide ontstekingen van ondermeer het ruggenmerg.\nOver fibromyalgie bestaan er veel misverstanden, er is geen éénduidige oorzaak noch een sluitend medicijn, dikwijls worden pijnstillers ingezet maar dit biedt helaas geen oplossing op langer termijn voor de patiënt. ",
+      "indications": [
+        "Ontspanning",
+        "Bindweefsel losmaken",
+        "Rustiger slapen",
+        "Pijnbestrijding"
+      ],
+      "priceAmount": 40,
+      "priceType": "fixed",
+      "duration": "30 min",
+      "salonizedLink": "https://sorelax.salonized.com/widget_bookings/new"
     }
   ]
 }
